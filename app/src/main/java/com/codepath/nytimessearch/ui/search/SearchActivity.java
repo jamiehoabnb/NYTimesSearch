@@ -2,6 +2,7 @@ package com.codepath.nytimessearch.ui.search;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.codepath.nytimessearch.models.Settings;
 import com.codepath.nytimessearch.network.NYTAPI;
 import com.codepath.nytimessearch.ui.article.ArticleActivity;
 import com.codepath.nytimessearch.util.EndlessRecyclerViewScrollListener;
+import com.codepath.nytimessearch.util.InternetCheckUtil;
 import com.codepath.nytimessearch.util.ItemClickSupport;
 
 import org.parceler.Parcels;
@@ -77,8 +79,20 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         final SearchActivity searchActivity = this;
         rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(final int page, final int totalItemsCount) {
                 if (query == null) {
+                    return;
+                }
+
+                if (! InternetCheckUtil.isOnline()) {
+                    Snackbar.make(rvResults, R.string.internet_connection_error, Snackbar.LENGTH_LONG)
+                            .setAction(getString(R.string.retry), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    onLoadMore(page, totalItemsCount);
+                                }
+                            })
+                            .show();
                     return;
                 }
 
@@ -101,7 +115,20 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(final String query) {
+
+                if (! InternetCheckUtil.isOnline()) {
+                    Snackbar.make(rvResults, R.string.internet_connection_error, Snackbar.LENGTH_LONG)
+                            .setAction(getString(R.string.retry), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    onQueryTextSubmit(query);
+                                }
+                            })
+                            .show();
+                    return false;
+                }
+
                 searchActivity.query = query;
                 //A new query starts on page 0.
                 NYTAPI.search(query, 0, settings, searchActivity);
@@ -149,5 +176,18 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
             docs.addAll(searchResponse.getDocs());
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onSearchError() {
+        final SearchActivity searchActivity = this;
+        Snackbar.make(rvResults, R.string.search_api_error, Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NYTAPI.search(query, 0, settings, searchActivity);
+                    }
+                })
+                .show();
     }
 }

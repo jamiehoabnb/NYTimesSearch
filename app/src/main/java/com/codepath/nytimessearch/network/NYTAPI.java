@@ -1,5 +1,9 @@
 package com.codepath.nytimessearch.network;
 
+import android.support.design.widget.Snackbar;
+import android.view.View;
+
+import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.SearchAPIResponse;
 import com.codepath.nytimessearch.models.SearchResponse;
 import com.codepath.nytimessearch.models.Settings;
@@ -17,6 +21,8 @@ public class NYTAPI {
 
     public interface SearchResponseListener {
         void onSearchResponse(SearchResponse searchResponse, boolean addPage);
+
+        void onSearchError();
     }
 
     private static NYTService getNYTService(Interceptor interceptor) {
@@ -49,8 +55,8 @@ public class NYTAPI {
 
             @Override
             public void onFailure(Call<SearchAPIResponse> call, Throwable t) {
-                //XXX Add snackbar here.
                 t.printStackTrace();
+                listener.onSearchError();
             }
         });
     }
