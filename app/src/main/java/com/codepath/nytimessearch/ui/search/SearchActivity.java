@@ -84,18 +84,6 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                     return;
                 }
 
-                if (! InternetCheckUtil.isOnline()) {
-                    Snackbar.make(rvResults, R.string.internet_connection_error, Snackbar.LENGTH_LONG)
-                            .setAction(getString(R.string.retry), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    onLoadMore(page, totalItemsCount);
-                                }
-                            })
-                            .show();
-                    return;
-                }
-
                 //Add another page of articles because user is scrolling.
                 NYTAPI.search(query, page, settings, searchActivity);
             }
@@ -116,19 +104,6 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-
-                if (! InternetCheckUtil.isOnline()) {
-                    Snackbar.make(rvResults, R.string.internet_connection_error, Snackbar.LENGTH_LONG)
-                            .setAction(getString(R.string.retry), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    onQueryTextSubmit(query);
-                                }
-                            })
-                            .show();
-                    return false;
-                }
-
                 searchActivity.query = query;
                 //A new query starts on page 0.
                 NYTAPI.search(query, 0, settings, searchActivity);
@@ -181,7 +156,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     @Override
     public void onSearchError() {
         final SearchActivity searchActivity = this;
-        Snackbar.make(rvResults, R.string.search_api_error, Snackbar.LENGTH_LONG)
+
+        int errorMsgId = InternetCheckUtil.isOnline() ?
+                R.string.search_api_error : R.string.internet_connection_error;
+
+        Snackbar.make(rvResults, errorMsgId, Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
