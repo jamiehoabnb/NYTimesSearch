@@ -21,6 +21,8 @@ import com.codepath.nytimessearch.models.Settings;
 import com.codepath.nytimessearch.network.NYTAPI;
 import com.codepath.nytimessearch.ui.article.ArticleActivity;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -95,7 +97,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     public void onArticleClick(AdapterView<?> parent, View view, int position, long id) {
         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
         Doc doc = docs.get(position);
-        i.putExtra("doc", doc);
+        i.putExtra("doc", Parcels.wrap(doc));
         startActivity(i);
     }
 

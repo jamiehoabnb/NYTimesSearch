@@ -1,8 +1,11 @@
 package com.codepath.nytimessearch.models;
 
+import org.parceler.Parcel;
+
 import java.io.Serializable;
 
-public class Multimedia implements Serializable {
+@Parcel
+public class Multimedia {
     String url;
 
     public String getUrl() {

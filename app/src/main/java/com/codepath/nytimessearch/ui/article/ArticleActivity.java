@@ -14,6 +14,8 @@ import android.webkit.WebViewClient;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
 
+import org.parceler.Parcels;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,7 +39,7 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
 
-        Doc doc = (Doc) getIntent().getSerializableExtra("doc");
+        Doc doc = (Doc) Parcels.unwrap(getIntent().getParcelableExtra("doc"));
         wvArticle.loadUrl(doc.getWebUrl());
     }
 

@@ -1,10 +1,13 @@
 package com.codepath.nytimessearch.models;
 
+import org.parceler.Parcel;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Settings implements Serializable {
+@Parcel
+public class Settings {
 
     private Date beginDate;
     private Date endDate;

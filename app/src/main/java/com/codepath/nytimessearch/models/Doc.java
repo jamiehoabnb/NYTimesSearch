@@ -2,10 +2,13 @@ package com.codepath.nytimessearch.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 import java.io.Serializable;
 import java.util.List;
 
-public class Doc implements Serializable {
+@Parcel
+public class Doc {
 
     @SerializedName("web_url")
     String webUrl;

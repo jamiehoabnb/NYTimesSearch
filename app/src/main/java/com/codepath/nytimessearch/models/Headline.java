@@ -1,8 +1,11 @@
 package com.codepath.nytimessearch.models;
 
+import org.parceler.Parcel;
+
 import java.io.Serializable;
 
-public class Headline implements Serializable {
+@Parcel
+public class Headline {
 
     String main;
 

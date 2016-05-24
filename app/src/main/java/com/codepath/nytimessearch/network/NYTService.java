@@ -1,7 +1,6 @@
 package com.codepath.nytimessearch.network;
 
 import com.codepath.nytimessearch.models.SearchAPIResponse;
-import com.codepath.nytimessearch.models.SearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

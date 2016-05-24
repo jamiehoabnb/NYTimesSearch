@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Settings;
 
+import org.parceler.Parcels;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class SettingsFragment extends DialogFragment {
     public static SettingsFragment newInstance(Settings settings) {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_SETTINGS, settings);
+        args.putParcelable(ARG_SETTINGS, Parcels.wrap(settings));
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +86,7 @@ public class SettingsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            settings = (Settings) getArguments().getSerializable(ARG_SETTINGS);
+            settings = (Settings) Parcels.unwrap(getArguments().getParcelable(ARG_SETTINGS));
         }
     }
 
