@@ -1,7 +1,6 @@
 package com.codepath.nytimessearch.adapters;
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.nytimessearch.R;
-import com.codepath.nytimessearch.models.Article;
+import com.codepath.nytimessearch.models.Doc;
+import com.codepath.nytimessearch.util.NYTSearchContants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-public class ArticleArrayAdapter extends ArrayAdapter<Article> {
+public class ArticleArrayAdapter extends ArrayAdapter<Doc> {
 
     static class ViewHolder {
         @Nullable
@@ -34,13 +34,13 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
         }
     }
 
-    public ArticleArrayAdapter(Context context, List<Article> articles) {
+    public ArticleArrayAdapter(Context context, List<Doc> articles) {
         super(context, android.R.layout.simple_list_item_1, articles);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Article article = getItem(position);
+        Doc doc = getItem(position);
 
         ViewHolder viewHolder;
         if (convertView == null) {
@@ -51,13 +51,14 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.tvTitle.setText(article.getHeadline());
+        viewHolder.tvTitle.setText(doc.getHeadline().getMain());
 
         viewHolder.ivImage.setImageResource(0);
 
-        if (article.getThumbNail() != null) {
+        if (doc.getMultimedia() != null && ! doc.getMultimedia().isEmpty()) {
+            String url = NYTSearchContants.IMAGE_BASE_URL + doc.getMultimedia().get(0).getUrl();
             Picasso.with(getContext())
-                    .load(article.getThumbNail())
+                    .load(url)
                     //.placeholder(R.drawable.placeholder)
                     //.resize(width, 0)
                     .transform(

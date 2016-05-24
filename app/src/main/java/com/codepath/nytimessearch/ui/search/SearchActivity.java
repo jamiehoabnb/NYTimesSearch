@@ -1,4 +1,4 @@
-package com.codepath.nytimessearch.activities;
+package com.codepath.nytimessearch.ui.search;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -6,45 +6,34 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.adapters.ArticleArrayAdapter;
-import com.codepath.nytimessearch.fragments.SettingsFragment;
-import com.codepath.nytimessearch.models.Article;
+import com.codepath.nytimessearch.models.Doc;
+import com.codepath.nytimessearch.models.SearchResponse;
 import com.codepath.nytimessearch.models.Settings;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.codepath.nytimessearch.network.NYTAPI;
+import com.codepath.nytimessearch.ui.article.ArticleActivity;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
-import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SettingsFragment.SettingsDialogListener, NYTAPI.SearchResponseListener {
 
     @BindView(R.id.gvResults)
     GridView gridView;
 
     //XXX: Use icicles here.
-    ArrayList<Article> articles;
+    ArrayList<Doc> docs;
     ArticleArrayAdapter adapter;
 
     Settings settings;
@@ -55,8 +44,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        articles = new ArrayList<>();
-        adapter = new ArticleArrayAdapter(this, articles);
+        docs = new ArrayList<>();
+        adapter = new ArticleArrayAdapter(this, docs);
         gridView.setAdapter(adapter);
         settings = new Settings();
     }
@@ -67,40 +56,14 @@ public class SearchActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        final SearchActivity searchActivity = this;
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Toast.makeText(this, "Searching for " + query, Toast.LENGTH_SHORT).show();
-                AsyncHttpClient client = new AsyncHttpClient();
-                String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-
-                RequestParams params = new RequestParams();
-                params.add("api-key", "ac25876594df46d88d27fed52e4fa84c");
-                params.add("page", "0");
-                params.add("q", query);
-
-                client.get(url, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        JSONArray articleJsonResults = null;
-
-                        try {
-                            articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                            adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                            Log.d("DEBUG", articles.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        Log.e("DEBUG", "Error getting articles.", throwable);
-                    }
-                });
+                NYTAPI.search(query, settings, searchActivity);
                 searchView.clearFocus();
-
                 return true;
             }
 
@@ -131,8 +94,19 @@ public class SearchActivity extends AppCompatActivity {
     @OnItemClick(R.id.gvResults)
     public void onArticleClick(AdapterView<?> parent, View view, int position, long id) {
         Intent i = new Intent(getApplicationContext(), ArticleActivity.class);
-        Article article = articles.get(position);
-        i.putExtra("article", article);
+        Doc doc = docs.get(position);
+        i.putExtra("doc", doc);
         startActivity(i);
+    }
+
+    @Override
+    public void onFinishDialog(Settings settings) {
+        this.settings = settings;
+    }
+
+    @Override
+    public void onSearchResponse(SearchResponse searchResponse) {
+        adapter.clear();
+        adapter.addAll(searchResponse.getDocs());
     }
 }

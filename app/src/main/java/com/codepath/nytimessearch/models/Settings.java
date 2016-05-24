@@ -15,7 +15,7 @@ public class Settings implements Serializable {
 
     private SortOrder sortOrder;
 
-    private enum NewsDesk {
+    public enum NewsDesk {
         Business, Foreign, Movies, Sports, Styles, Travel;
     }
 

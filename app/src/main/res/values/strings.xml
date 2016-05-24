@@ -18,8 +18,11 @@
     <string name="movies">Movies</string>
     <string name="foreign">Foreign</string>
     <string name="save">Save</string>
+    <string name="search_settings">Search Settings</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="sort_array">
+        <item>Choose A Sort Order</item>
         <item>Newest</item>
         <item>Oldest</item>
     </string-array>

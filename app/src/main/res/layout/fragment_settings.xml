@@ -4,13 +4,24 @@
     android:layout_height="match_parent"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
-    tools:context="com.codepath.nytimessearch.fragments.SettingsFragment">
+    tools:context=".ui.search.SettingsFragment">
 
+    <TextView
+        android:id="@+id/tvSettingsHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/settings_border_margin"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:layout_gravity="center"
+        style="@style/SettingHeading"
+        android:text="@string/search_settings"
+        android:gravity="center" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/settings_border_margin"
         android:layout_marginLeft="@dimen/settings_border_margin"
         android:layout_marginRight="@dimen/settings_border_margin"
         android:layout_marginBottom="@dimen/settings_margin_bottom"
@@ -146,11 +157,27 @@
         </GridLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btSave"
-        android:layout_width="wrap_content"
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/settings_border_margin"
-        android:layout_gravity="center"
-        android:text="@string/save"/>
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel" />
+    </LinearLayout>
 </LinearLayout>

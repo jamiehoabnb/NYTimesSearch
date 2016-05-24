@@ -1,4 +1,4 @@
-package com.codepath.nytimessearch.activities;
+package com.codepath.nytimessearch.ui.article;
 
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.codepath.nytimessearch.R;
-import com.codepath.nytimessearch.models.Article;
+import com.codepath.nytimessearch.models.Doc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,8 +37,8 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
 
-        Article article = (Article) getIntent().getSerializableExtra("article");
-        wvArticle.loadUrl(article.getWebUrl());
+        Doc doc = (Doc) getIntent().getSerializableExtra("doc");
+        wvArticle.loadUrl(doc.getWebUrl());
     }
 
     @Override
