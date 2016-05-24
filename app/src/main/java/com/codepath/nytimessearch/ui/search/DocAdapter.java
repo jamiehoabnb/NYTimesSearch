@@ -8,16 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
 import com.codepath.nytimessearch.util.NYTSearchContants;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 public class DocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -101,12 +100,12 @@ public class DocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.tvTitle.setText(doc.getHeadline().getMain());
 
         String url = NYTSearchContants.IMAGE_BASE_URL + doc.getMultimedia().get(0).getUrl();
-        Picasso.with(viewHolder.ivImage.getContext())
+        Glide.with(viewHolder.ivImage.getContext())
                 .load(url)
                 //.placeholder(R.drawable.placeholder)
                 //.resize(width, 0)
-                .transform(
-                        new RoundedCornersTransformation(10, 10))
+                //.transform(
+                        //new RoundedCornersTransformation(10, 10))
                 .into(viewHolder.ivImage);
     }
 
