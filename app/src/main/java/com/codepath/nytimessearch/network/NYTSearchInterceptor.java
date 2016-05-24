@@ -18,10 +18,13 @@ public class NYTSearchInterceptor implements Interceptor {
 
     private Settings settings;
 
+    private int page;
+
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
-    public NYTSearchInterceptor(String query, Settings settings) {
+    public NYTSearchInterceptor(String query, int page, Settings settings) {
         this.query = query;
+        this.page = page;
         this.settings = settings;
     }
 
@@ -32,6 +35,8 @@ public class NYTSearchInterceptor implements Interceptor {
 
         HttpUrl.Builder builder = originalHttpUrl.newBuilder()
                 .addQueryParameter("api-key", NYTSearchContants.API_KEY);
+
+        builder = builder.addQueryParameter("page", String.valueOf(page));
 
         if (query != null) {
             builder = builder.addQueryParameter("q", query);

@@ -22,11 +22,13 @@ import com.codepath.nytimessearch.models.SearchResponse;
 import com.codepath.nytimessearch.models.Settings;
 import com.codepath.nytimessearch.network.NYTAPI;
 import com.codepath.nytimessearch.ui.article.ArticleActivity;
+import com.codepath.nytimessearch.util.EndlessRecyclerViewScrollListener;
 import com.codepath.nytimessearch.util.ItemClickSupport;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     //XXX: Use icicles here.
     ArrayList<Doc> docs;
     DocAdapter adapter;
+    String query;
 
     Settings settings;
 
@@ -71,6 +74,19 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 }
         );
 
+        final SearchActivity searchActivity = this;
+        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (query == null) {
+                    return;
+                }
+
+                //Add another page of articles because user is scrolling.
+                NYTAPI.search(query, page, settings, searchActivity);
+            }
+        });
+
         settings = new Settings();
     }
 
@@ -86,7 +102,9 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                NYTAPI.search(query, settings, searchActivity);
+                searchActivity.query = query;
+                //A new query starts on page 0.
+                NYTAPI.search(query, 0, settings, searchActivity);
                 searchView.clearFocus();
                 return true;
             }
@@ -121,9 +139,15 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     }
 
     @Override
-    public void onSearchResponse(SearchResponse searchResponse) {
-        docs.clear();
-        docs.addAll(searchResponse.getDocs());
-        adapter.notifyDataSetChanged();
+    public void onSearchResponse(SearchResponse searchResponse, boolean addPage) {
+        if (addPage) {
+            int curSize = adapter.getItemCount();
+            docs.addAll(searchResponse.getDocs());
+            adapter.notifyItemRangeInserted(curSize, docs.size() - 1);
+        } else {
+            docs.clear();
+            docs.addAll(searchResponse.getDocs());
+            adapter.notifyDataSetChanged();
+        }
     }
 }

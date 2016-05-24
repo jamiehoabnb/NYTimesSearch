@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NYTAPI {
 
     public interface SearchResponseListener {
-        void onSearchResponse(SearchResponse searchResponse);
+        void onSearchResponse(SearchResponse searchResponse, boolean addPage);
     }
 
     private static NYTService getNYTService(Interceptor interceptor) {
@@ -35,8 +35,8 @@ public class NYTAPI {
         return service;
     }
 
-    public static void search(final String query, final Settings settings, final SearchResponseListener listener) {
-        NYTSearchInterceptor interceptor = new NYTSearchInterceptor(query, settings);
+    public static void search(final String query, final int page, final Settings settings, final SearchResponseListener listener) {
+        NYTSearchInterceptor interceptor = new NYTSearchInterceptor(query, page, settings);
         NYTService service = getNYTService(interceptor);
 
         Call<SearchAPIResponse> call = service.search();
@@ -44,7 +44,7 @@ public class NYTAPI {
             @Override
             public void onResponse(Call<SearchAPIResponse> call, Response<SearchAPIResponse> response) {
                 SearchAPIResponse resp = response.body();
-                listener.onSearchResponse(resp.getResponse());
+                listener.onSearchResponse(resp.getResponse(), page > 0);
             }
 
             @Override
