@@ -16,15 +16,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/gvResults"
-            android:layout_centerHorizontal="true"
-            android:numColumns="4"
-            android:nestedScrollingEnabled="false" />
+            android:id="@+id/rvResults"
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 </RelativeLayout>
