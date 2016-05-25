@@ -1,6 +1,7 @@
 package com.codepath.nytimessearch.network;
 
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 
 import com.codepath.nytimessearch.R;
@@ -49,13 +50,18 @@ public class NYTAPI {
         call.enqueue(new Callback<SearchAPIResponse>() {
             @Override
             public void onResponse(Call<SearchAPIResponse> call, Response<SearchAPIResponse> response) {
-                SearchAPIResponse resp = response.body();
-                listener.onSearchResponse(resp.getResponse(), page > 0);
+                try {
+                    SearchAPIResponse resp = response.body();
+                    listener.onSearchResponse(resp.getResponse(), page > 0);
+                } catch (Throwable t) {
+                    Log.e("ERROR", "NYTAPI Error", t);
+                    listener.onSearchError();
+                }
             }
 
             @Override
             public void onFailure(Call<SearchAPIResponse> call, Throwable t) {
-                t.printStackTrace();
+                Log.e("ERROR", "NYTAPI Error", t);
                 listener.onSearchError();
             }
         });

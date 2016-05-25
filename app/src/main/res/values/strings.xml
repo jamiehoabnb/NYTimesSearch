@@ -25,7 +25,7 @@
     <string name="search_api_error">Search API Error</string>
 
     <string-array name="sort_array">
-        <item>Choose A Sort Order</item>
+        <item>Choose Sort Order</item>
         <item>Newest</item>
         <item>Oldest</item>
     </string-array>

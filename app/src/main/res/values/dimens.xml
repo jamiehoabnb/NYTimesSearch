@@ -5,4 +5,8 @@
     <dimen name="settings_border_margin">30dp</dimen>
     <dimen name="settings_label_margin">10dp</dimen>
     <dimen name="settings_margin_bottom">20dp</dimen>
+    <dimen name="article_margin">4dp</dimen>
+    <dimen name="setting_heading">20sp</dimen>
+    <dimen name="article_heading">10sp</dimen>
+    <dimen name="snippet_size">8sp</dimen>
 </resources>
