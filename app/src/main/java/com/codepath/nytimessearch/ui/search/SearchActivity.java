@@ -1,7 +1,9 @@
 package com.codepath.nytimessearch.ui.search;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
@@ -31,6 +33,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class SearchActivity extends AppCompatActivity implements SettingsFragment.SettingsDialogListener, NYTAPI.SearchResponseListener {
@@ -41,27 +45,40 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     @BindView(R.id.tbSearch)
     Toolbar toolbar;
 
-    //XXX: Use icicles here.
-    ArrayList<Doc> docs;
-    DocAdapter adapter;
-    String query;
+    @State ArrayList<Doc> docs;
 
-    Settings settings;
+    DocAdapter adapter;
+
+    //Need to cache query for endless scroll requests.
+    @State String query;
+
+    @State Settings settings;
+
+    private static final int NUM_COLS_PORTRAIT = 4;
+    private static final int NUM_COLS_LANDSCAPE = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 
-        docs = new ArrayList<>();
+        if (docs == null) {
+            docs = new ArrayList<>();
+        }
+
         adapter = new DocAdapter(docs);
         rvResults.setAdapter(adapter);
 
+        int numCols =
+                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                        NUM_COLS_PORTRAIT : NUM_COLS_LANDSCAPE;
+
         StaggeredGridLayoutManager gridLayoutManager =
-                new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+                new StaggeredGridLayoutManager(numCols, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
         rvResults.setItemAnimator(new SlideInUpAnimator());
 
@@ -85,12 +102,20 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                     return;
                 }
 
-                //Add another page of articles because user is scrolling.
+                //Add another page of articles for endless scroll.
                 NYTAPI.search(query, page, settings, searchActivity);
             }
         });
 
-        settings = new Settings();
+        if (settings == null) {
+            settings = new Settings();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override

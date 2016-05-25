@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 @Parcel
-public class Settings {
+//Ice Pick does not support @Parcel so using Serializable here.
+public class Settings implements Serializable {
 
     private Date beginDate;
     private Date endDate;
