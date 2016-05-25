@@ -38,6 +38,9 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     @BindView(R.id.rvResults)
     RecyclerView rvResults;
 
+    @BindView(R.id.tbSearch)
+    Toolbar toolbar;
+
     //XXX: Use icicles here.
     ArrayList<Doc> docs;
     DocAdapter adapter;
@@ -49,11 +52,9 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tbSearch);
-        setSupportActionBar(toolbar);
-
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
 
         docs = new ArrayList<>();
         adapter = new DocAdapter(docs);

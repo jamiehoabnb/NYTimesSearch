@@ -25,15 +25,16 @@ public class ArticleActivity extends AppCompatActivity {
     @BindView(R.id.wvArticle)
     WebView wvArticle;
 
+    @BindView(R.id.tbArticle)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tbArticle);
-        setSupportActionBar(toolbar);
-
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
 
         wvArticle.setWebViewClient(new WebViewClient() {
 
@@ -57,8 +58,6 @@ public class ArticleActivity extends AppCompatActivity {
         ShareActionProvider miShare = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-
-        WebView wvArticle = (WebView) findViewById(R.id.wvArticle);
         shareIntent.putExtra(Intent.EXTRA_TEXT, wvArticle.getUrl());
 
         miShare.setShareIntent(shareIntent);
