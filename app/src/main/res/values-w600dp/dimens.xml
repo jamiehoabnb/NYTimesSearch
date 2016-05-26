@@ -7,4 +7,5 @@
     <dimen name="setting_heading">24sp</dimen>
     <dimen name="article_heading">14sp</dimen>
     <dimen name="snippet_size">10sp</dimen>
+    <dimen name="suggestion_size">16sp</dimen>
 </resources>

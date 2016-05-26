@@ -9,4 +9,6 @@
     <dimen name="setting_heading">20sp</dimen>
     <dimen name="article_heading">10sp</dimen>
     <dimen name="snippet_size">8sp</dimen>
+    <dimen name="suggestion_size">12sp</dimen>
+    <dimen name="suggestion_text_padding">5dp</dimen>
 </resources>

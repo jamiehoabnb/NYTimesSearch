@@ -1,17 +1,19 @@
 package com.codepath.nytimessearch.ui.search;
 
-import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +32,7 @@ import com.codepath.nytimessearch.util.ItemClickSupport;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +40,9 @@ import icepick.Icepick;
 import icepick.State;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
-public class SearchActivity extends AppCompatActivity implements SettingsFragment.SettingsDialogListener, NYTAPI.SearchResponseListener {
+public class SearchActivity extends AppCompatActivity implements
+        SettingsFragment.SettingsDialogListener, NYTAPI.SearchResponseListener,
+        SearchSuggestionAdaptor.SearchSuggestionOnClickListener {
 
     @BindView(R.id.rvResults)
     RecyclerView rvResults;
@@ -49,13 +54,25 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
 
     DocAdapter adapter;
 
+    SearchSuggestionAdaptor searchSuggestionAdaptor;
+
+    SearchView searchView;
+
+    StaggeredGridLayoutManager gridLayoutManager;
+
+    EndlessRecyclerViewScrollListener currentScrollListener;
+
     //Need to cache query for endless scroll requests.
     @State String query;
 
     @State Settings settings;
 
+    @State LinkedHashSet<String> queryHistory;
+
     private static final int NUM_COLS_PORTRAIT = 4;
     private static final int NUM_COLS_LANDSCAPE = 6;
+
+    private static final String[] CURSOR_COLUMNS = new String[]{"_id", "query"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +87,10 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
             docs = new ArrayList<>();
         }
 
+        if (queryHistory == null) {
+            queryHistory = new LinkedHashSet<>();
+        }
+
         adapter = new DocAdapter(docs);
         rvResults.setAdapter(adapter);
 
@@ -77,7 +98,7 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
                         NUM_COLS_PORTRAIT : NUM_COLS_LANDSCAPE;
 
-        StaggeredGridLayoutManager gridLayoutManager =
+        gridLayoutManager =
                 new StaggeredGridLayoutManager(numCols, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(gridLayoutManager);
         rvResults.setItemAnimator(new SlideInUpAnimator());
@@ -94,8 +115,16 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 }
         );
 
+        rvResults.addOnScrollListener(getScrollNewListener());
+
+        if (settings == null) {
+            settings = new Settings();
+        }
+    }
+
+    private EndlessRecyclerViewScrollListener getScrollNewListener() {
         final SearchActivity searchActivity = this;
-        rvResults.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        currentScrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(final int page, final int totalItemsCount) {
                 if (query == null) {
@@ -105,11 +134,18 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
                 //Add another page of articles for endless scroll.
                 NYTAPI.search(query, page, settings, searchActivity);
             }
-        });
 
-        if (settings == null) {
-            settings = new Settings();
-        }
+            @Override
+            public void onScrolled(RecyclerView view, int dx, int dy) {
+                super.onScrolled(view, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        };
+        return currentScrollListener;
     }
 
     @Override
@@ -123,26 +159,63 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        final SearchActivity searchActivity = this;
 
+        //Set up the search manager.
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        //Set up the query text listener.
+        final SearchActivity searchActivity = this;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
+                //Cache the query.
                 searchActivity.query = query;
-                //A new query starts on page 0.
+                if (! queryHistory.contains(query)) {
+                    queryHistory.add(query);
+                }
+
+                //Get first page of query.
                 NYTAPI.search(query, 0, settings, searchActivity);
                 searchView.clearFocus();
                 return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
+            public boolean onQueryTextChange(String s) {
+                loadSearchSuggestions(s);
+                return true;
             }
         });
+
+        searchSuggestionAdaptor = new SearchSuggestionAdaptor(this, R.layout.item_search_suggestion,
+                null, CURSOR_COLUMNS, null, -1000, this);
+        searchView.setSuggestionsAdapter(searchSuggestionAdaptor);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onSearchSuggestionClick(String query) {
+        this.query = query;
+        searchView.setQuery(query, true);
+        NYTAPI.search(query, 0, settings, this);
+        searchView.clearFocus();
+    }
+
+    private void loadSearchSuggestions(String searchText) {
+        //Load query history.
+        MatrixCursor cursor = new MatrixCursor(CURSOR_COLUMNS);
+        int i = 0;
+        for (String q: queryHistory) {
+            String[] temp = new String[2];
+            temp[0] = Integer.toString(i);
+            temp[1] = q;
+            cursor.addRow(temp);
+            i++;
+        }
+
+        searchSuggestionAdaptor.changeCursor(cursor);
     }
 
     @Override
@@ -173,7 +246,11 @@ public class SearchActivity extends AppCompatActivity implements SettingsFragmen
             docs.addAll(searchResponse.getDocs());
             adapter.notifyItemRangeInserted(curSize, docs.size() - 1);
         } else {
+            //When you clear and add new data, the scroll listener needs to be re-created as well.
+            //Otherwise it stops working.
+            rvResults.removeOnScrollListener(currentScrollListener);
             docs.clear();
+            rvResults.addOnScrollListener(getScrollNewListener());
             docs.addAll(searchResponse.getDocs());
             adapter.notifyDataSetChanged();
         }
