@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/suggestion_text_padding"
     android:layout_gravity="center_horizontal"
-    android:background="@color/dialog_bg">
+    android:background="@color/bg">
 
     <TextView
         android:id="@+id/tvQuerySuggestion"

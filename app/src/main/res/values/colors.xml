@@ -12,4 +12,5 @@
 
     <color name="article_item_bg">#ffffff</color>
     <color name="bg">#dfdede</color>
+    <color name="colorText">#000000</color>
 </resources>
