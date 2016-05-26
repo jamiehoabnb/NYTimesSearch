@@ -1,0 +1,51 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:dialogTheme">@style/AppDialogTheme</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/toolbar_heading</item>
+    </style>
+
+    <!-- Define your custom dialog theme here extending from base -->
+    <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorHighlight">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@color/dialog_bg</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
+    <style name="SettingHeading">
+        <item name="android:textSize">@dimen/setting_heading</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/dialog_heading_title</item>
+    </style>
+
+    <style name="ArticleHeading">
+        <item name="android:textSize">@dimen/article_heading</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/dialog_heading_title</item>
+    </style>
+
+    <style name="ArticleSnippet">
+        <item name="android:textSize">@dimen/snippet_size</item>
+    </style>
+
+    <style name="SuggestionText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/suggestion_size</item>
+    </style>
+
+</resources>

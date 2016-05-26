@@ -1,0 +1,187 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:orientation="vertical"
+    tools:context=".ui.list.SettingsFragment">
+
+    <TextView
+        android:id="@+id/tvSettingsHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/settings_border_margin"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:layout_gravity="center"
+        style="@style/SettingHeading"
+        android:text="@string/search_settings"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvBeginDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/settings_label_margin"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="@string/begin_date" />
+
+        <EditText
+            android:id="@+id/etBeginDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvEndDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/settings_label_margin"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="@string/end_date" />
+
+        <EditText
+            android:id="@+id/etEndDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSortOrder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/settings_label_margin"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="@string/sort_order" />
+
+        <Spinner
+            android:id="@+id/spSortOrder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/sort_array"
+            android:prompt="@string/sort_order_prompt"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvNewsDeskValues"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/settings_label_margin"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="@string/news_desk_values" />
+
+        <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:columnCount="2">
+
+            <CheckBox
+                android:id="@+id/cbBusiness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/business" />
+
+            <CheckBox
+                android:id="@+id/cbForeign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/foreign" />
+
+            <CheckBox
+                android:id="@+id/cbMovies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/movies" />
+
+            <CheckBox
+                android:id="@+id/cbSports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sports" />
+
+            <CheckBox
+                android:id="@+id/cbStyles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/styles" />
+
+            <CheckBox
+                android:id="@+id/cbTravel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/travel" />
+
+        </GridLayout>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/settings_border_margin"
+        android:layout_marginRight="@dimen/settings_border_margin"
+        android:layout_marginBottom="@dimen/settings_margin_bottom"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_label_margin"
+            android:background="@color/colorPrimary"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_label_margin"
+            android:background="@color/colorPrimary"
+            android:text="@string/cancel" />
+    </LinearLayout>
+</LinearLayout>
