@@ -172,12 +172,16 @@
             android:id="@+id/btSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_label_margin"
+            android:background="@color/colorPrimary"
             android:text="@string/save" />
 
         <Button
             android:id="@+id/btCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_label_margin"
+            android:background="@color/colorPrimary"
             android:text="@string/cancel" />
     </LinearLayout>
 </LinearLayout>
