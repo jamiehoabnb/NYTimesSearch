@@ -4,10 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Parcel
-public class Doc {
+//Ice Pick does not support @Parcel so using Serializable here.
+public class Doc implements Serializable {
 
     @SerializedName("web_url")
     String webUrl;
