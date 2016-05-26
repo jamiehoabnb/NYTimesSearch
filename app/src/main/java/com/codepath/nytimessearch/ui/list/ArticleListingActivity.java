@@ -1,25 +1,24 @@
 package com.codepath.nytimessearch.ui.list;
 
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
-import com.codepath.nytimessearch.models.Doc;
 import com.codepath.nytimessearch.models.Settings;
-import com.codepath.nytimessearch.network.NYTAPI;
+import com.codepath.nytimessearch.ui.list.slidingtab.SlidingTabLayout;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 import butterknife.BindView;
@@ -27,78 +26,84 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 
-public class SearchActivity extends AppCompatActivity implements
+public class ArticleListingActivity extends AppCompatActivity implements
         SettingsFragment.SettingsDialogListener,
-        SearchSuggestionAdaptor.SearchSuggestionOnClickListener,
-        ListGridView.ListGridViewHolder {
-
-    @BindView(R.id.rvResults)
-    RecyclerView rvGridView;
-
-    ListGridView listGridView;
+        SearchSuggestionAdaptor.SearchSuggestionOnClickListener {
 
     @BindView(R.id.tbSearch)
     Toolbar toolbar;
 
-    @State ArrayList<Doc> docs;
+    @BindView(R.id.tbLayout)
+    ViewGroup tbLayout;
 
     SearchSuggestionAdaptor searchSuggestionAdaptor;
 
     SearchView searchView;
 
-    ListProgressBar progressBar;
+    @State
+    LinkedHashSet<String> queryHistory;
 
-    //Need to cache query for endless scroll requests.
-    @State String query;
+    @State
+    String query;
 
-    @State Settings settings;
-
-    @State LinkedHashSet<String> queryHistory;
-
-    private static final int NUM_COLS_PORTRAIT = 4;
-    private static final int NUM_COLS_LANDSCAPE = 6;
+    @State
+    Settings settings;
 
     private static final String[] CURSOR_COLUMNS = new String[]{"_id", "query"};
+
+    @BindView(R.id.pager)
+    ViewPager pager;
+
+    ViewPagerAdapter adapter;
+
+    @BindView(R.id.tabs)
+    SlidingTabLayout tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_article_listing);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
-        if (docs == null) {
-            docs = new ArrayList<>();
-        }
 
         if (queryHistory == null) {
             queryHistory = new LinkedHashSet<>();
         }
 
-        int numCols =
-                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
-                        NUM_COLS_PORTRAIT : NUM_COLS_LANDSCAPE;
-
-        listGridView = new ListGridView(this, rvGridView, docs, toolbar, numCols);
-
         if (settings == null) {
             settings = new Settings();
         }
-    }
 
-    public Context getContext() {
-        return this;
-    }
+        //Set up fragments now that we have a toolbar and progress bar for them to use.
+        SearchArticleListingFragment.setSettings(settings);
+        SearchArticleListingFragment.setQuery(query);
 
-    public void onLoadMore(int page) {
-        if (query == null) {
-            return;
-        }
+        CharSequence titles[]={
+                getString(R.string.top_stories),
+                getResources().getString(R.string.business),
+                getResources().getString(R.string.foreign),
+                getResources().getString(R.string.movies),
+                getResources().getString(R.string.sports),
+                getResources().getString(R.string.styles),
+                getResources().getString(R.string.travel),
+                getResources().getString(R.string.search)
+        };
 
-        //Add another page of articles for endless scroll.
-        NYTAPI.search(query, page, settings, listGridView);
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),titles);
+        pager.setAdapter(adapter);
+
+        tabs.setDistributeEvenly(true);
+
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.tabsScrollColor);
+            }
+        });
+
+        tabs.setViewPager(pager);
     }
 
     @Override
@@ -117,20 +122,22 @@ public class SearchActivity extends AppCompatActivity implements
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         //Set up the query text listener.
-        final SearchActivity searchActivity = this;
+        final ArticleListingActivity searchActivity = this;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                //Cache the query.
-                searchActivity.query = query;
-                if (! queryHistory.contains(query)) {
+                if (!queryHistory.contains(query)) {
                     queryHistory.add(query);
                 }
 
+                //Switch to the search tab.
+                tabs.getViewPager().setCurrentItem(ViewPagerAdapter.NUM_TABS-1);
+
                 //Get first page of query.
-                progressBar.showProgressBar();
-                NYTAPI.search(query, 0, settings, listGridView);
+                ListProgressBar.getInstance().showProgressBar();
+                searchActivity.query = query;
+                SearchArticleListingFragment.search(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -152,16 +159,15 @@ public class SearchActivity extends AppCompatActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem actionProgressItem = menu.findItem(R.id.miActionProgress);
-        progressBar = new ListProgressBar(actionProgressItem);
-        listGridView.setProgressBar(progressBar);
+        ListProgressBar.createInstance(actionProgressItem);
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public void onSearchSuggestionClick(String query) {
-        this.query = query;
         searchView.setQuery(query, true);
-        NYTAPI.search(query, 0, settings, listGridView);
+        this.query = query;
+        SearchArticleListingFragment.search(query);
         searchView.clearFocus();
     }
 
@@ -169,7 +175,7 @@ public class SearchActivity extends AppCompatActivity implements
         //Load query history.
         MatrixCursor cursor = new MatrixCursor(CURSOR_COLUMNS);
         int i = 0;
-        for (String q: queryHistory) {
+        for (String q : queryHistory) {
             String[] temp = new String[2];
             temp[0] = Integer.toString(i);
             temp[1] = q;
@@ -199,5 +205,6 @@ public class SearchActivity extends AppCompatActivity implements
     @Override
     public void onFinishDialog(Settings settings) {
         this.settings = settings;
+        SearchArticleListingFragment.setSettings(settings);
     }
 }

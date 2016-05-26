@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 
 import com.codepath.nytimessearch.R;
@@ -39,8 +39,6 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
 
     private RecyclerView rvGridView;
 
-    private ListProgressBar progressBar;
-
     private DocAdapter adapter;
 
     private ArrayList<Doc> docs;
@@ -49,14 +47,14 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
 
     private EndlessRecyclerViewScrollListener currentScrollListener;
 
-    private Toolbar toolbar;
+    private ViewGroup tbLayout;
 
     public ListGridView(final ListGridViewHolder holder, final RecyclerView rvGridView,
-                        final ArrayList<Doc> docs, Toolbar toolbar, final int numCols) {
+                        final ArrayList<Doc> docs, ViewGroup tbLayout, final int numCols) {
         this.holder = holder;
         this.rvGridView = rvGridView;
         this.docs = docs;
-        this.toolbar = toolbar;
+        this.tbLayout = tbLayout;
 
         adapter = new DocAdapter(docs);
         rvGridView.setAdapter(adapter);
@@ -82,20 +80,16 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
         rvGridView.addOnScrollListener(getScrollNewListener());
     }
 
-    public void setProgressBar(ListProgressBar progressBar) {
-        this.progressBar = progressBar;
-    }
-
     private void toolbarAnimateShow(final int verticalOffset) {
-        toolbar.animate()
+        tbLayout.animate()
                 .translationY(0)
                 .setInterpolator(new LinearInterpolator())
                 .setDuration(180);
     }
 
     private void toolbarAnimateHide() {
-        toolbar.animate()
-                .translationY(-toolbar.getHeight())
+        tbLayout.animate()
+                .translationY(-tbLayout.getHeight())
                 .setInterpolator(new LinearInterpolator())
                 .setDuration(180);
     }
@@ -116,15 +110,20 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+
+                if (tbLayout == null) {
+                    return;
+                }
+
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (scrollingUp) {
-                        if (verticalOffset > toolbar.getHeight()) {
+                        if (verticalOffset > tbLayout.getHeight()) {
                             toolbarAnimateHide();
                         } else {
                             toolbarAnimateShow(verticalOffset);
                         }
                     } else {
-                        if (toolbar.getTranslationY() < toolbar.getHeight() * -0.6 && verticalOffset > toolbar.getHeight()) {
+                        if (tbLayout.getTranslationY() < tbLayout.getHeight() * -0.6 && verticalOffset > tbLayout.getHeight()) {
                             toolbarAnimateHide();
                         } else {
                             toolbarAnimateShow(verticalOffset);
@@ -136,21 +135,26 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
             @Override
             public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (tbLayout == null) {
+                    return;
+                }
+
                 verticalOffset += dy;
                 scrollingUp = dy > 0;
-                int toolbarYOffset = (int) (dy - toolbar.getTranslationY());
-                toolbar.animate().cancel();
+                int toolbarYOffset = (int) (dy - tbLayout.getTranslationY());
+                tbLayout.animate().cancel();
                 if (scrollingUp) {
-                    if (toolbarYOffset < toolbar.getHeight()) {
-                        toolbar.setTranslationY(-toolbarYOffset);
+                    if (toolbarYOffset < tbLayout.getHeight()) {
+                        tbLayout.setTranslationY(-toolbarYOffset);
                     } else {
-                        toolbar.setTranslationY(-toolbar.getHeight());
+                        tbLayout.setTranslationY(-tbLayout.getHeight());
                     }
                 } else {
                     if (toolbarYOffset < 0) {
-                        toolbar.setTranslationY(0);
+                        tbLayout.setTranslationY(0);
                     } else {
-                        toolbar.setTranslationY(-toolbarYOffset);
+                        tbLayout.setTranslationY(-toolbarYOffset);
                     }
                 }
             }
@@ -160,7 +164,8 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
 
     @Override
     public void onSearchResponse(SearchResponse searchResponse, boolean addPage) {
-        progressBar.hideProgressBar();
+        ListProgressBar.getInstance().hideProgressBar();
+
         if (addPage) {
             int curSize = adapter.getItemCount();
             docs.addAll(searchResponse.getDocs());
@@ -178,7 +183,7 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
 
     @Override
     public void onSearchError() {
-        progressBar.hideProgressBar();
+        ListProgressBar.getInstance().hideProgressBar();
 
         int errorMsgId = InternetCheckUtil.isOnline() ?
                 R.string.search_api_error : R.string.internet_connection_error;

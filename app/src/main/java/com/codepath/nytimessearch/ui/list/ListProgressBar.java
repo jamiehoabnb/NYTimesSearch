@@ -4,10 +4,20 @@ import android.view.MenuItem;
 
 public class ListProgressBar {
 
-    MenuItem actionProgressItem;
+    private static ListProgressBar instance;
 
-    public ListProgressBar(MenuItem actionProgressItem) {
+    private MenuItem actionProgressItem;
+
+    private ListProgressBar(MenuItem actionProgressItem) {
         this.actionProgressItem = actionProgressItem;
+    }
+
+    public static void createInstance(MenuItem actionProgressItem) {
+        instance = new ListProgressBar(actionProgressItem);
+    }
+
+    public static ListProgressBar getInstance() {
+        return instance;
     }
 
 

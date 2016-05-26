@@ -23,6 +23,7 @@
     <string name="internet_connection_error">Internet Connection Error</string>
     <string name="retry">Retry</string>
     <string name="search_api_error">Search API Error</string>
+    <string name="top_stories">Top Stories</string>
 
     <string-array name="sort_array">
         <item>Choose Sort Order</item>
