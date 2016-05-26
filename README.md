@@ -36,12 +36,12 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] Added tabs for quick access to latest articles from popular news desks.
+* [x] Added tabs for quick access to latest articles from popular news desks.  Source:  http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
 * [x] Added additional rows in grid for landscape layout to take advantage of additional space.
 * [x] Show search history when entering query.
 * [x] Show progress bar when searching.
 * [x] Use Ice Pick for retaining state after device rotation.
-* [x] Hide toolbar when scrolling.
+* [x] Hide toolbar and tabs when scrolling.
 
 ## Video Walkthrough
 
@@ -57,8 +57,10 @@ Describe any challenges encountered while building the app.
 
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Retrofit](http://square.github.io/retrofit/) - Simple asynchronous HTTP requests with JSON parsing
+- [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
+- [Ice Pick](https://github.com/frankiesardo/icepick) - Icepick is an Android library that eliminates the boilerplate of saving and restoring instance state. 
+- [Parceler](https://github.com/johncarl81/parceler) - Parceler is a code generation library that generates the Android Parcelable boilerplate source code.
 
 ## License
 
