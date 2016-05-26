@@ -9,6 +9,10 @@
         <item name="android:dialogTheme">@style/AppDialogTheme</item>
     </style>
 
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/toolbar_heading</item>
+    </style>
+
     <!-- Define your custom dialog theme here extending from base -->
     <style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>

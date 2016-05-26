@@ -15,7 +15,8 @@
         android:background="?attr/colorPrimary"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        app:titleTextAppearance="@style/Toolbar.TitleText">
     </android.support.v7.widget.Toolbar>
 
     <WebView
