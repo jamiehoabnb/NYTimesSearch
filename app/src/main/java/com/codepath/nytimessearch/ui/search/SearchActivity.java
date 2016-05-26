@@ -1,11 +1,15 @@
 package com.codepath.nytimessearch.ui.search;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.MatrixCursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
@@ -18,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 
 import com.codepath.nytimessearch.R;
@@ -76,6 +81,10 @@ public class SearchActivity extends AppCompatActivity implements
     private static final int NUM_COLS_LANDSCAPE = 6;
 
     private static final String[] CURSOR_COLUMNS = new String[]{"_id", "query"};
+
+    //Source:  https://rylexr.tinbytes.com/2015/04/27/how-to-hideshow-android-toolbar-when-scrolling-google-play-musics-behavior/
+    // The elevation of the toolbar when content is scrolled behind
+    private static final float TOOLBAR_ELEVATION = 14f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,17 +147,69 @@ public class SearchActivity extends AppCompatActivity implements
                 NYTAPI.search(query, page, settings, searchActivity);
             }
 
-            @Override
-            public void onScrolled(RecyclerView view, int dx, int dy) {
-                super.onScrolled(view, dx, dy);
-            }
+            // Keeps track of the overall vertical offset in the list
+            int verticalOffset;
+
+            // Determines the scroll UP/DOWN direction
+            boolean scrollingUp;
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (scrollingUp) {
+                        if (verticalOffset > toolbar.getHeight()) {
+                            toolbarAnimateHide();
+                        } else {
+                            toolbarAnimateShow(verticalOffset);
+                        }
+                    } else {
+                        if (toolbar.getTranslationY() < toolbar.getHeight() * -0.6 && verticalOffset > toolbar.getHeight()) {
+                            toolbarAnimateHide();
+                        } else {
+                            toolbarAnimateShow(verticalOffset);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                verticalOffset += dy;
+                scrollingUp = dy > 0;
+                int toolbarYOffset = (int) (dy - toolbar.getTranslationY());
+                toolbar.animate().cancel();
+                if (scrollingUp) {
+                    if (toolbarYOffset < toolbar.getHeight()) {
+                        toolbar.setTranslationY(-toolbarYOffset);
+                    } else {
+                        toolbar.setTranslationY(-toolbar.getHeight());
+                    }
+                } else {
+                    if (toolbarYOffset < 0) {
+                        toolbar.setTranslationY(0);
+                    } else {
+                        toolbar.setTranslationY(-toolbarYOffset);
+                    }
+                }
             }
         };
         return currentScrollListener;
+    }
+
+    private void toolbarAnimateShow(final int verticalOffset) {
+        toolbar.animate()
+                .translationY(0)
+                .setInterpolator(new LinearInterpolator())
+                .setDuration(180);
+    }
+
+    private void toolbarAnimateHide() {
+        toolbar.animate()
+                .translationY(-toolbar.getHeight())
+                .setInterpolator(new LinearInterpolator())
+                .setDuration(180);
     }
 
     @Override
