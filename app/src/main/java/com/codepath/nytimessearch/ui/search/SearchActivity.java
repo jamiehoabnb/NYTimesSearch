@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
@@ -61,6 +62,8 @@ public class SearchActivity extends AppCompatActivity implements
     StaggeredGridLayoutManager gridLayoutManager;
 
     EndlessRecyclerViewScrollListener currentScrollListener;
+
+    MenuItem miActionProgressItem;
 
     //Need to cache query for endless scroll requests.
     @State String query;
@@ -176,6 +179,7 @@ public class SearchActivity extends AppCompatActivity implements
                 }
 
                 //Get first page of query.
+                showProgressBar();
                 NYTAPI.search(query, 0, settings, searchActivity);
                 searchView.clearFocus();
                 return true;
@@ -193,6 +197,26 @@ public class SearchActivity extends AppCompatActivity implements
         searchView.setSuggestionsAdapter(searchSuggestionAdaptor);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Extract the action-view from the menu item
+        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
     }
 
     @Override
@@ -241,6 +265,7 @@ public class SearchActivity extends AppCompatActivity implements
 
     @Override
     public void onSearchResponse(SearchResponse searchResponse, boolean addPage) {
+        hideProgressBar();
         if (addPage) {
             int curSize = adapter.getItemCount();
             docs.addAll(searchResponse.getDocs());
@@ -258,6 +283,7 @@ public class SearchActivity extends AppCompatActivity implements
 
     @Override
     public void onSearchError() {
+        hideProgressBar();
         final SearchActivity searchActivity = this;
 
         int errorMsgId = InternetCheckUtil.isOnline() ?
