@@ -5,8 +5,8 @@
     <dimen name="activity_horizontal_margin">10dp</dimen>
     <dimen name="activity_vertical_margin">10dp</dimen>
     <dimen name="setting_heading">24sp</dimen>
-    <dimen name="article_heading">14sp</dimen>
-    <dimen name="snippet_size">10sp</dimen>
+    <dimen name="article_heading">18sp</dimen>
+    <dimen name="snippet_size">14sp</dimen>
     <dimen name="suggestion_size">16sp</dimen>
     <dimen name="toolbar_heading">30sp</dimen>
 </resources>
