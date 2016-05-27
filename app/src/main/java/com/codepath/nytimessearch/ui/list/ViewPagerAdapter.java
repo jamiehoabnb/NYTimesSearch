@@ -31,16 +31,14 @@ public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
             case 1:
                 return new BusinessArticleListingFragment();
             case 2:
-                return new ForeignArticleListingFragment();
-            case 3:
                 return new MoviesArticleListingFragment();
-            case 4:
+            case 3:
                 return new SportsArticleListingFragment();
-            case 5:
+            case 4:
                 return new StylesArticleListingFragment();
-            case 6:
+            case 5:
                 return new TravelArticleListingFragment();
-            case 7:
+            case 6:
                 return new SearchArticleListingFragment();
             default:
                 return null;

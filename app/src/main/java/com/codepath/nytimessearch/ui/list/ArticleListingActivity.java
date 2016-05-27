@@ -78,7 +78,6 @@ public class ArticleListingActivity extends AppCompatActivity implements
         String[] titles ={
                 getString(R.string.top_stories),
                 getResources().getString(R.string.business),
-                getResources().getString(R.string.foreign),
                 getResources().getString(R.string.movies),
                 getResources().getString(R.string.sports),
                 getResources().getString(R.string.styles),
