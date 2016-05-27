@@ -6,8 +6,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
@@ -47,14 +45,11 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
 
     private EndlessRecyclerViewScrollListener currentScrollListener;
 
-    private ViewGroup tbLayout;
-
     public ListGridView(final ListGridViewHolder holder, final RecyclerView rvGridView,
-                        final ArrayList<Doc> docs, ViewGroup tbLayout, final int numCols) {
+                        final ArrayList<Doc> docs, final int numCols) {
         this.holder = holder;
         this.rvGridView = rvGridView;
         this.docs = docs;
-        this.tbLayout = tbLayout;
 
         adapter = new DocAdapter(docs);
         rvGridView.setAdapter(adapter);
@@ -80,83 +75,11 @@ public class ListGridView implements NYTAPI.SearchResponseListener {
         rvGridView.addOnScrollListener(getScrollNewListener());
     }
 
-    private void toolbarAnimateShow(final int verticalOffset) {
-        tbLayout.animate()
-                .translationY(0)
-                .setInterpolator(new LinearInterpolator())
-                .setDuration(180);
-    }
-
-    private void toolbarAnimateHide() {
-        tbLayout.animate()
-                .translationY(-tbLayout.getHeight())
-                .setInterpolator(new LinearInterpolator())
-                .setDuration(180);
-    }
-
     private EndlessRecyclerViewScrollListener getScrollNewListener() {
         currentScrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(final int page, final int totalItemsCount) {
                 holder.onLoadMore(page);
-            }
-
-            // Keeps track of the overall vertical offset in the list
-            int verticalOffset;
-
-            // Determines the scroll UP/DOWN direction
-            boolean scrollingUp;
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (tbLayout == null) {
-                    return;
-                }
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (scrollingUp) {
-                        if (verticalOffset > tbLayout.getHeight()) {
-                            toolbarAnimateHide();
-                        } else {
-                            toolbarAnimateShow(verticalOffset);
-                        }
-                    } else {
-                        if (tbLayout.getTranslationY() < tbLayout.getHeight() * -0.6 && verticalOffset > tbLayout.getHeight()) {
-                            toolbarAnimateHide();
-                        } else {
-                            toolbarAnimateShow(verticalOffset);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (tbLayout == null) {
-                    return;
-                }
-
-                verticalOffset += dy;
-                scrollingUp = dy > 0;
-                int toolbarYOffset = (int) (dy - tbLayout.getTranslationY());
-                tbLayout.animate().cancel();
-                if (scrollingUp) {
-                    if (toolbarYOffset < tbLayout.getHeight()) {
-                        tbLayout.setTranslationY(-toolbarYOffset);
-                    } else {
-                        tbLayout.setTranslationY(-tbLayout.getHeight());
-                    }
-                } else {
-                    if (toolbarYOffset < 0) {
-                        tbLayout.setTranslationY(0);
-                    } else {
-                        tbLayout.setTranslationY(-toolbarYOffset);
-                    }
-                }
             }
         };
         return currentScrollListener;

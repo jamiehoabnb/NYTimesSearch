@@ -33,9 +33,6 @@ public class ArticleListingActivity extends AppCompatActivity implements
     @BindView(R.id.tbSearch)
     Toolbar toolbar;
 
-    @BindView(R.id.tbLayout)
-    ViewGroup tbLayout;
-
     SearchSuggestionAdaptor searchSuggestionAdaptor;
 
     SearchView searchView;
