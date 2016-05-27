@@ -5,6 +5,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -12,12 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Settings;
-import com.codepath.nytimessearch.ui.list.slidingtab.SlidingTabLayout;
 
 import java.util.LinkedHashSet;
 
@@ -54,7 +52,7 @@ public class ArticleListingActivity extends AppCompatActivity implements
     ViewPagerAdapter adapter;
 
     @BindView(R.id.tabs)
-    SlidingTabLayout tabs;
+    TabLayout tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,12 @@ public class ArticleListingActivity extends AppCompatActivity implements
         if (settings == null) {
             settings = new Settings();
         }
-        CharSequence titles[]={
+
+        setUpTabs();
+    }
+
+    protected void setUpTabs() {
+        String[] titles ={
                 getString(R.string.top_stories),
                 getResources().getString(R.string.business),
                 getResources().getString(R.string.foreign),
@@ -83,19 +86,32 @@ public class ArticleListingActivity extends AppCompatActivity implements
                 getResources().getString(R.string.search)
         };
 
+        for (String title: titles) {
+            tabs.addTab(tabs.newTab().setText(title));
+        }
+
+        tabs.setTabGravity(TabLayout.GRAVITY_FILL);
+
         adapter =  new ViewPagerAdapter(getSupportFragmentManager(),titles);
         pager.setAdapter(adapter);
 
-        tabs.setDistributeEvenly(true);
-
-        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.tabsScrollColor);
+            public void onTabSelected(TabLayout.Tab tab) {
+                pager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-
-        tabs.setViewPager(pager);
     }
 
     @Override
@@ -124,7 +140,7 @@ public class ArticleListingActivity extends AppCompatActivity implements
                 }
 
                 //Switch to the search tab.
-                tabs.getViewPager().setCurrentItem(ViewPagerAdapter.NUM_TABS-1);
+                pager.setCurrentItem(ViewPagerAdapter.NUM_TABS-1);
                 SearchArticleListingFragment searchArticleListingFragment =
                         (SearchArticleListingFragment) adapter.getRegisteredFragment(ViewPagerAdapter.NUM_TABS-1);
 
