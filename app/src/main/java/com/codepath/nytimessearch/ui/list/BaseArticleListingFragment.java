@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
 
 import java.util.ArrayList;
@@ -55,13 +54,11 @@ public abstract class BaseArticleListingFragment extends Fragment implements Lis
 
         rvGridView = (RecyclerView) view.findViewById(getGridViewId());
 
-        tbLayout = (ViewGroup) getActivity().findViewById(R.id.tbLayout);
-
         int numCols =
                 getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
                         NUM_COLS_PORTRAIT : NUM_COLS_LANDSCAPE;
 
-        listGridView = new ListGridView(this, rvGridView, docs, tbLayout, numCols);
+        listGridView = new ListGridView(this, rvGridView, docs, numCols);
 
         if (docs.isEmpty()) {
             init();
