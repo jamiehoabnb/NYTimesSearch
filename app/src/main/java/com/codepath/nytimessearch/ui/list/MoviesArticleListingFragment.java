@@ -43,6 +43,7 @@ public class MoviesArticleListingFragment extends BaseArticleListingFragment {
     @Override
     public void onLoadMore(int page) {
         //Add another page of articles for endless scroll.
+        ListProgressBar.getInstance().showProgressBar();
         NYTAPI.search(null, page, settings, listGridView);
     }
 }
