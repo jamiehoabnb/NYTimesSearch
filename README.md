@@ -42,6 +42,7 @@ The following **additional** features are implemented:
 * [x] Show search history when entering query using SimpleCursorAdapter.
 * [x] Show progress bar when waiting for response from REST API.
 * [x] Use Ice Pick for retaining state after device rotation.
+* [x] Randomized image selection and filtered out thumbnails that were too small to display.
 
 ## Video Walkthrough
 
