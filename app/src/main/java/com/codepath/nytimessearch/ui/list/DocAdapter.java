@@ -11,9 +11,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
+import com.codepath.nytimessearch.models.Multimedia;
 import com.codepath.nytimessearch.util.NYTSearchContants;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,7 +103,17 @@ public class DocAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Doc doc = docs.get(position);
         viewHolder.tvTitle.setText(doc.getHeadline().getMain());
 
-        String url = NYTSearchContants.IMAGE_BASE_URL + doc.getMultimedia().get(0).getUrl();
+        final String TYPE_THUMBNAIL = "thumbnail";
+        List<Multimedia> images = new ArrayList<>(doc.getMultimedia());
+        for(Iterator<Multimedia> iter = images.iterator(); iter.hasNext(); ) {
+            Multimedia multimedia = iter.next();
+            if (TYPE_THUMBNAIL.equals(multimedia.getSubtype())) {
+                iter.remove();
+            }
+        }
+
+        String url = NYTSearchContants.IMAGE_BASE_URL + images.get(
+                new Random().nextInt(images.size())).getUrl();
         Glide.with(viewHolder.ivImage.getContext())
                 .load(url)
                 //.placeholder(R.drawable.placeholder)

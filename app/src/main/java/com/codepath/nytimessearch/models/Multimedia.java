@@ -8,8 +8,18 @@ import java.io.Serializable;
 //Ice Pick does not support @Parcel so using Serializable here.
 public class Multimedia implements Serializable {
     String url;
+    String type;
+    String subtype;
 
     public String getUrl() {
         return url;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSubtype() {
+        return subtype;
     }
 }
