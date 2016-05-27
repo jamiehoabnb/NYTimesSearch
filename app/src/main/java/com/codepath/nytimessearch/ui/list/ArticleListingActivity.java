@@ -5,7 +5,6 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -139,9 +138,10 @@ public class ArticleListingActivity extends AppCompatActivity implements
                 }
 
                 //Switch to the search tab.
-                pager.setCurrentItem(ViewPagerAdapter.NUM_TABS-1);
+                pager.setCurrentItem(adapter.getCount()-1);
+
                 SearchArticleListingFragment searchArticleListingFragment =
-                        (SearchArticleListingFragment) adapter.getRegisteredFragment(ViewPagerAdapter.NUM_TABS-1);
+                        (SearchArticleListingFragment) adapter.getRegisteredFragment(adapter.getCount()-1);
 
                 //Get first page of query.
                 ListProgressBar.getInstance().showProgressBar();
@@ -177,7 +177,7 @@ public class ArticleListingActivity extends AppCompatActivity implements
         searchView.setQuery(query, true);
         this.query = query;
         SearchArticleListingFragment searchArticleListingFragment =
-                (SearchArticleListingFragment) adapter.getRegisteredFragment(ViewPagerAdapter.NUM_TABS-1);
+                (SearchArticleListingFragment) adapter.getRegisteredFragment(adapter.getCount()-1);
         searchArticleListingFragment.search(settings, query);
         searchView.clearFocus();
     }

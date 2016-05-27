@@ -11,8 +11,6 @@ public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
 
     CharSequence titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
 
-    public static final int NUM_TABS = 8;
-
     // Build a Constructor and assign the passed Values to appropriate values in the class
     public ViewPagerAdapter(FragmentManager fm, CharSequence titles[]) {
         super(fm);
