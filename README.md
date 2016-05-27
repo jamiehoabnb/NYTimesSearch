@@ -38,10 +38,9 @@ The following **additional** features are implemented:
 
 * [x] Added tabs for quick access to latest articles from popular news desks.  Source:  http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
 * [x] Added additional rows in grid for landscape layout to take advantage of additional space.
-* [x] Show search history when entering query.
-* [x] Show progress bar when searching.
+* [x] Show search history when entering query using SimpleCursorAdapter.
+* [x] Show progress bar when waiting for response from REST API.
 * [x] Use Ice Pick for retaining state after device rotation.
-* [x] Hide toolbar and tabs when scrolling.
 
 ## Video Walkthrough
 
