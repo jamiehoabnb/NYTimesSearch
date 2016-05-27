@@ -36,7 +36,8 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [x] Added tabs for quick access to latest articles from popular news desks.  Source:  http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
+* [x] Added tabs for quick access to latest articles from popular news desks.  Source:  https://mzgreen.github.io/2015/06/23/How-to-hideshow-Toolbar-when-list-is-scrolling%28part3%29/
+* [x] Used CoordinatorLayout to hide toolbar when scrolling.
 * [x] Added additional rows in grid for landscape layout to take advantage of additional space.
 * [x] Show search history when entering query using SimpleCursorAdapter.
 * [x] Show progress bar when waiting for response from REST API.
