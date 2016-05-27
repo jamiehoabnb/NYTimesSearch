@@ -11,8 +11,6 @@ public class ForeignArticleListingFragment extends BaseArticleListingFragment {
 
     private Settings settings;
 
-    private ListGridView listGridView;
-
     public ForeignArticleListingFragment() {
         super();
 
@@ -44,10 +42,5 @@ public class ForeignArticleListingFragment extends BaseArticleListingFragment {
     public void onLoadMore(int page) {
         //Add another page of articles for endless scroll.
         NYTAPI.search(null, page, settings, listGridView);
-    }
-
-    @Override
-    public void setListGridView(ListGridView listGridView) {
-        this.listGridView = listGridView;
     }
 }

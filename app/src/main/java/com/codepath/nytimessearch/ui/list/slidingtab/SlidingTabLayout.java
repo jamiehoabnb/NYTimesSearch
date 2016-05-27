@@ -36,6 +36,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
+ * Source:  http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
+ *
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
  * the user's scroll progress.
  * <p>
@@ -67,7 +69,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private static final int TITLE_OFFSET_DIPS = 24;
     private static final int TAB_VIEW_PADDING_DIPS = 16;
-    private static final int TAB_VIEW_TEXT_SIZE_SP = 12;
+    private static final int TAB_VIEW_TEXT_SIZE_SP = 18;
 
     private int mTitleOffset;
 
