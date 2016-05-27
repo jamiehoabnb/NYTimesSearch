@@ -12,4 +12,5 @@
     <dimen name="suggestion_size">12sp</dimen>
     <dimen name="suggestion_text_padding">5dp</dimen>
     <dimen name="toolbar_heading">20sp</dimen>
+    <dimen name="tab_layout_elevation">2dp</dimen>
 </resources>

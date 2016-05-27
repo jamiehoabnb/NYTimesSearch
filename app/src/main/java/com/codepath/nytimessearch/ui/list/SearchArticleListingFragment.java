@@ -1,19 +1,16 @@
 package com.codepath.nytimessearch.ui.list;
 
-import android.support.design.widget.TabLayout;
-
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Settings;
 import com.codepath.nytimessearch.network.NYTAPI;
-import com.codepath.nytimessearch.ui.list.BaseArticleListingFragment;
+
+import icepick.State;
 
 public class SearchArticleListingFragment extends BaseArticleListingFragment {
 
-    private static String query;
+    @State String query;
 
-    private static Settings settings;
-
-    private static ListGridView listGridView;
+    @State Settings settings;
 
     public SearchArticleListingFragment() {
         super();
@@ -36,28 +33,16 @@ public class SearchArticleListingFragment extends BaseArticleListingFragment {
         }
     }
 
-    public static void setSettings(Settings settings) {
-        SearchArticleListingFragment.settings = settings;
-    }
-
-    public static void setQuery(String query) {
-        SearchArticleListingFragment.query = query;
-    }
-
     @Override
     public void onLoadMore(int page) {
         //Add another page of articles for endless scroll.
         NYTAPI.search(query, page, settings, listGridView);
     }
 
-    public static void search(String query) {
-        SearchArticleListingFragment.query = query;
+    public void search(Settings settings, String query) {
+        this.query = query;
+        this.settings = settings;
         NYTAPI.search(query, 0, settings, listGridView);
-    }
-
-    @Override
-    public void setListGridView(ListGridView listGridView) {
-        SearchArticleListingFragment.listGridView = listGridView;
     }
 
 }

@@ -75,11 +75,6 @@ public class ArticleListingActivity extends AppCompatActivity implements
         if (settings == null) {
             settings = new Settings();
         }
-
-        //Set up fragments now that we have a toolbar and progress bar for them to use.
-        SearchArticleListingFragment.setSettings(settings);
-        SearchArticleListingFragment.setQuery(query);
-
         CharSequence titles[]={
                 getString(R.string.top_stories),
                 getResources().getString(R.string.business),
@@ -133,11 +128,13 @@ public class ArticleListingActivity extends AppCompatActivity implements
 
                 //Switch to the search tab.
                 tabs.getViewPager().setCurrentItem(ViewPagerAdapter.NUM_TABS-1);
+                SearchArticleListingFragment searchArticleListingFragment =
+                        (SearchArticleListingFragment) adapter.getRegisteredFragment(ViewPagerAdapter.NUM_TABS-1);
 
                 //Get first page of query.
                 ListProgressBar.getInstance().showProgressBar();
                 searchActivity.query = query;
-                SearchArticleListingFragment.search(query);
+                searchArticleListingFragment.search(settings, query);
                 searchView.clearFocus();
                 return true;
             }
@@ -167,7 +164,9 @@ public class ArticleListingActivity extends AppCompatActivity implements
     public void onSearchSuggestionClick(String query) {
         searchView.setQuery(query, true);
         this.query = query;
-        SearchArticleListingFragment.search(query);
+        SearchArticleListingFragment searchArticleListingFragment =
+                (SearchArticleListingFragment) adapter.getRegisteredFragment(ViewPagerAdapter.NUM_TABS-1);
+        searchArticleListingFragment.search(settings, query);
         searchView.clearFocus();
     }
 
@@ -205,6 +204,5 @@ public class ArticleListingActivity extends AppCompatActivity implements
     @Override
     public void onFinishDialog(Settings settings) {
         this.settings = settings;
-        SearchArticleListingFragment.setSettings(settings);
     }
 }

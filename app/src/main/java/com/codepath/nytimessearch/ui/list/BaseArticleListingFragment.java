@@ -10,10 +10,7 @@ import android.view.ViewGroup;
 
 import com.codepath.nytimessearch.R;
 import com.codepath.nytimessearch.models.Doc;
-import com.codepath.nytimessearch.models.Settings;
-import com.codepath.nytimessearch.network.NYTAPI;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import icepick.Icepick;
@@ -25,6 +22,8 @@ public abstract class BaseArticleListingFragment extends Fragment implements Lis
     ArrayList<Doc> docs;
 
     ViewGroup tbLayout;
+
+    ListGridView listGridView;
 
     private static final int NUM_COLS_PORTRAIT = 4;
     private static final int NUM_COLS_LANDSCAPE = 6;
@@ -62,15 +61,13 @@ public abstract class BaseArticleListingFragment extends Fragment implements Lis
                 getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
                         NUM_COLS_PORTRAIT : NUM_COLS_LANDSCAPE;
 
-        setListGridView(new ListGridView(this, rvGridView, docs, tbLayout, numCols));
+        listGridView = new ListGridView(this, rvGridView, docs, tbLayout, numCols);
 
         if (docs.isEmpty()) {
             init();
         }
         return view;
     }
-
-    public abstract void setListGridView(ListGridView listGridView);
 
     public abstract int getLayoutId();
 

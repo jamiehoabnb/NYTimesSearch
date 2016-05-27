@@ -13,8 +13,6 @@ public class MoviesArticleListingFragment extends BaseArticleListingFragment {
 
     private Settings settings;
 
-    private ListGridView listGridView;
-
     public MoviesArticleListingFragment() {
         super();
 
@@ -46,10 +44,5 @@ public class MoviesArticleListingFragment extends BaseArticleListingFragment {
     public void onLoadMore(int page) {
         //Add another page of articles for endless scroll.
         NYTAPI.search(null, page, settings, listGridView);
-    }
-
-    @Override
-    public void setListGridView(ListGridView listGridView) {
-        this.listGridView = listGridView;
     }
 }

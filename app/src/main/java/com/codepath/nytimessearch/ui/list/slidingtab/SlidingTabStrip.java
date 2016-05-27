@@ -1,6 +1,6 @@
 package com.codepath.nytimessearch.ui.list.slidingtab;
 
-//Source: https://github.com/google/iosched/blob/master/android/src/main/java/com/google/samples/apps/iosched/ui/widget/SlidingTabStrip.java
+//Source: http://www.android4devs.com/2015/01/how-to-make-material-design-sliding-tabs.html
 
 /*
  * Copyright 2014 Google Inc. All rights reserved.
