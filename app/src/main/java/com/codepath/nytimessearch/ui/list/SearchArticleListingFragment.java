@@ -36,6 +36,7 @@ public class SearchArticleListingFragment extends BaseArticleListingFragment {
     @Override
     public void onLoadMore(int page) {
         //Add another page of articles for endless scroll.
+        ListProgressBar.getInstance().showProgressBar();
         NYTAPI.search(query, page, settings, listGridView);
     }
 
