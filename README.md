@@ -46,7 +46,9 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough](readme_assets/NYTimesSearch.gif)
+![Portrait Video Walkthrough](readme_assets/NYTimesSearch.gif)
+
+![Landscape Video Walkthrough](readme_assets/NYTimesSearchLandscape.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
